@@ -5,6 +5,8 @@ import (
 	pb "grpc-go-practice/example/proto"
 	"log"
 
+	"google.golang.org/grpc/credentials"
+
 	"google.golang.org/grpc"
 )
 
@@ -13,7 +15,13 @@ const (
 )
 
 func main() {
-	conn, err := grpc.Dial(Address, grpc.WithInsecure())
+	// TLS 连接
+	creds, err := credentials.NewClientTLSFromFile("../../keys/server.crt", "HY")
+	if err != nil {
+		log.Fatalf("Failed to create credentials %v", err)
+	}
+
+	conn, err := grpc.Dial(Address, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		log.Fatalln(err)
 	}
